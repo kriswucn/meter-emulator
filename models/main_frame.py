@@ -1,32 +1,30 @@
 # coding:utf-8
-from unicodedata import name
-from models import *
+from models import IntField, StrField, FloatField, DateField, DateTimeField
+from models import BaseModel, Choice, ChoiceField
 
-class SuffixSection(BaseModel):
-    pass
 
 class PrefixSection(BaseModel):
-    starter: IntField = IntField(name='起始符', 
-                                output_data_type='hex', 
-                                length=1, 
-                                output_value='68', 
-                                input_value=68)
-    head_flag: IntField = IntField(name='头标识', 
-                                output_data_type='hex', 
-                                length=1, 
-                                output_value='F5', 
-                                input_value=68)
-    datagram_length: IntField = IntField(name='报文长度', 
-                                output_data_type='hex', 
-                                length=2, 
-                                output_value='0000', 
-                                input_value=68)
-    protocol_version: IntField = IntField(name='协议版本', 
-                                output_data_type='hex', 
-                                length=2, 
-                                output_value='0001', 
-                                input_value=1)
-    function_code: IntField = IntField(name='功能码',
-                                    output_data_type='bcd',
-                                    length=2,
-                                    )
+    start_flag: IntField
+    head_flag: IntField
+    datagram_length: IntField
+    protocol_version: IntField
+    function_code: IntField
+    trans_direction: ChoiceField
+    req_or_resp: ChoiceField
+    sub_station_number: StrField
+    datagram_id: StrField
+    encryption_code: StrField
+    data_section_length: IntField
+
+
+class SuffixSection(BaseModel):
+    checking_code: StrField
+    tail_flag: IntField
+    stop_flag: IntField
+
+
+if __name__ == '__main__':
+    c1 = Choice(name='单条上报', value=1)
+    cf1 = ChoiceField(name='上报方式', output_data_type='hex', length=1,
+                      input_value=c1, output_value='01')
+    print(cf1.json())
